@@ -71,7 +71,7 @@ class _LoginViewState extends State<LoginView> {
                 }
               }
             },
-            child: const Text('LogIn'),
+            child: const Text('Login'),
           ),
           TextButton(
             onPressed: () {
