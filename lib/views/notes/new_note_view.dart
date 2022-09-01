@@ -16,7 +16,9 @@ class _NewNoteViewState extends State<NewNoteView> {
 
   Future<DatabaseNote> createNewNote() async {
     final existingNote = _note;
-    if (existingNote != null) return existingNote;
+    if (existingNote != null) {
+      return existingNote;
+    }
 
     final currentUser = AuthService.firebase().currentUser!;
     final email = currentUser.email!;
