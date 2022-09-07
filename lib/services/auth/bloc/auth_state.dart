@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:mynotes/services/auth/auth_user.dart';
 import 'package:equatable/equatable.dart';
@@ -44,7 +45,16 @@ class AuthStateLoggedOut extends AuthState with EquatableMixin {
           isLoading: isLoading,
           loadingText: loadingText,
         );
-
   @override
   List<Object?> get props => [exception, isLoading];
+}
+
+class AuthStateForgotPassword extends AuthState {
+  final Exception? exception;
+  final bool hasSentEmail;
+  const AuthStateForgotPassword({
+    required this.exception,
+    required this.hasSentEmail,
+    required bool isLoading,
+  }) : super(isLoading: isLoading);
 }
