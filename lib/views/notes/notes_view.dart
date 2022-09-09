@@ -12,7 +12,6 @@ import 'package:mynotes/views/notes/notes_list_view.dart';
 
 class NotesView extends StatefulWidget {
   const NotesView({Key? key}) : super(key: key);
-
   @override
   State<NotesView> createState() => _NotesViewState();
 }
@@ -20,6 +19,11 @@ class NotesView extends StatefulWidget {
 class _NotesViewState extends State<NotesView> {
   late final FirebaseCloudStorage _notesService;
   String get userId => AuthService.firebase().currentUser!.id;
+  late final int _value;
+  late final String _key;
+  List ddList = [
+    {'First item': 1},
+  ];
 
   @override
   void initState() {
@@ -33,6 +37,17 @@ class _NotesViewState extends State<NotesView> {
       appBar: AppBar(
         title: const Text('Your Notes'),
         actions: [
+          DropdownButton(
+            items: const <DropdownMenuItem<int>>[
+              DropdownMenuItem(
+                child: Text('Test'),
+                value: 1,
+              ),
+            ],
+            onChanged: (value) {
+              _value = value as int;
+            },
+          ),
           IconButton(
             onPressed: () {
               Navigator.of(context).pushNamed(createOrUpdateNoteRoute);
@@ -60,7 +75,7 @@ class _NotesViewState extends State<NotesView> {
                 ),
               ];
             },
-          )
+          ),
         ],
       ),
       body: StreamBuilder(
