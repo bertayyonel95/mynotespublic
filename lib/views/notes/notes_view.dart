@@ -19,11 +19,7 @@ class NotesView extends StatefulWidget {
 class _NotesViewState extends State<NotesView> {
   late final FirebaseCloudStorage _notesService;
   String get userId => AuthService.firebase().currentUser!.id;
-  late final int _value;
-  late final String _key;
-  List ddList = [
-    {'First item': 1},
-  ];
+  int _value = 1;
 
   @override
   void initState() {
@@ -38,14 +34,30 @@ class _NotesViewState extends State<NotesView> {
         title: const Text('Your Notes'),
         actions: [
           DropdownButton(
+            value: _value,
+            alignment: Alignment.bottomRight,
             items: const <DropdownMenuItem<int>>[
               DropdownMenuItem(
-                child: Text('Test'),
+                child: Text('Ascending'),
                 value: 1,
+              ),
+              DropdownMenuItem(
+                child: Text('Descending'),
+                value: 2,
+              ),
+              DropdownMenuItem(
+                child: Text('Date Ascending'),
+                value: 3,
+              ),
+              DropdownMenuItem(
+                child: Text('Date Descending'),
+                value: 4,
               ),
             ],
             onChanged: (value) {
-              _value = value as int;
+              setState(() {
+                _value = value as int;
+              });
             },
           ),
           IconButton(
@@ -85,8 +97,14 @@ class _NotesViewState extends State<NotesView> {
             case ConnectionState.waiting: //implicit fall through
             case ConnectionState.active:
               if (snapshot.hasData) {
-                final allNotes = snapshot.data as Iterable<CloudNote>;
+                final allNotes = snapshot.data as List<CloudNote>;
+                allNotes.sort(
+                  (a, b) {
+                    return b.text.compareTo(a.text);
+                  },
+                );
                 return NotesListView(
+                  sortVar: _value,
                   notes: allNotes,
                   onDeleteNote: (note) async {
                     await _notesService.deleteNote(documentId: note.documentId);
