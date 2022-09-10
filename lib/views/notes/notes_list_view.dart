@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mynotes/enums/menu_action.dart';
 import 'package:mynotes/services/cloud/cloud_note.dart';
 import 'package:mynotes/utilities/dialogs/delete_dialog.dart';
 
@@ -8,7 +9,7 @@ class NotesListView extends StatelessWidget {
   final List<CloudNote> notes;
   final NoteCallback onDeleteNote;
   final NoteCallback onTap;
-  final int sortVar;
+  final FilterMenuAction sortVar;
 
   const NotesListView({
     Key? key,
@@ -24,28 +25,28 @@ class NotesListView extends StatelessWidget {
       itemCount: notes.length,
       itemBuilder: (context, index) {
         switch (sortVar) {
-          case 1:
+          case FilterMenuAction.ascending:
             notes.sort(
               (a, b) {
                 return a.text.compareTo(b.text);
               },
             );
             break;
-          case 2:
+          case FilterMenuAction.descending:
             notes.sort(
               (a, b) {
                 return b.text.compareTo(a.text);
               },
             );
             break;
-          case 3:
+          case FilterMenuAction.dateAscending:
             notes.sort(
               (a, b) {
                 return a.date.compareTo(b.date);
               },
             );
             break;
-          case 4:
+          case FilterMenuAction.dateDescending:
             notes.sort(
               (a, b) {
                 return b.date.compareTo(a.date);

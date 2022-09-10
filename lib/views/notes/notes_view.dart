@@ -19,7 +19,7 @@ class NotesView extends StatefulWidget {
 class _NotesViewState extends State<NotesView> {
   late final FirebaseCloudStorage _notesService;
   String get userId => AuthService.firebase().currentUser!.id;
-  int _value = 1;
+  FilterMenuAction _value = FilterMenuAction.ascending;
 
   @override
   void initState() {
@@ -33,31 +33,33 @@ class _NotesViewState extends State<NotesView> {
       appBar: AppBar(
         title: const Text('Your Notes'),
         actions: [
-          DropdownButton(
-            value: _value,
-            alignment: Alignment.bottomRight,
-            items: const <DropdownMenuItem<int>>[
-              DropdownMenuItem(
-                child: Text('Ascending'),
-                value: 1,
-              ),
-              DropdownMenuItem(
-                child: Text('Descending'),
-                value: 2,
-              ),
-              DropdownMenuItem(
-                child: Text('Date Ascending'),
-                value: 3,
-              ),
-              DropdownMenuItem(
-                child: Text('Date Descending'),
-                value: 4,
-              ),
-            ],
-            onChanged: (value) {
+          PopupMenuButton<FilterMenuAction>(
+            icon: const Icon(Icons.filter_alt_outlined),
+            tooltip: 'Filter',
+            onSelected: (value) {
               setState(() {
-                _value = value as int;
+                _value = value;
               });
+            },
+            itemBuilder: (context) {
+              return const [
+                PopupMenuItem<FilterMenuAction>(
+                  value: FilterMenuAction.ascending,
+                  child: Text('Ascending'),
+                ),
+                PopupMenuItem<FilterMenuAction>(
+                  value: FilterMenuAction.descending,
+                  child: Text('Descending'),
+                ),
+                PopupMenuItem<FilterMenuAction>(
+                  value: FilterMenuAction.dateAscending,
+                  child: Text('Older first'),
+                ),
+                PopupMenuItem<FilterMenuAction>(
+                  value: FilterMenuAction.dateDescending,
+                  child: Text('Newer first'),
+                ),
+              ];
             },
           ),
           IconButton(
@@ -98,11 +100,6 @@ class _NotesViewState extends State<NotesView> {
             case ConnectionState.active:
               if (snapshot.hasData) {
                 final allNotes = snapshot.data as List<CloudNote>;
-                allNotes.sort(
-                  (a, b) {
-                    return b.text.compareTo(a.text);
-                  },
-                );
                 return NotesListView(
                   sortVar: _value,
                   notes: allNotes,
