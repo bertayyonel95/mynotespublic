@@ -66,6 +66,7 @@ class NotesListView extends StatelessWidget {
               softWrap: true,
               overflow: TextOverflow.ellipsis,
             ),
+            subtitle: Text(note.date.toString().substring(0, 16)),
             trailing: IconButton(
               onPressed: () async {
                 final shouldDelete = await showDeleteDialog(context);

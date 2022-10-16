@@ -19,7 +19,21 @@ void main() {
     MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: const MaterialColor(
+          0xFF607D8B,
+          <int, Color>{
+            50: Color(0xFF8AA2AE),
+            100: Color(0xFF8AA2AE),
+            200: Color(0xFF7B96A3),
+            300: Color(0xFF7B96A3),
+            400: Color(0xFF6B8A99),
+            500: Color(0xFF607D8B),
+            600: Color(0xFF566F7C),
+            700: Color(0xFF4B626D),
+            800: Color(0xFF41545E),
+            900: Color(0xFF41545E),
+          },
+        ),
       ),
       home: BlocProvider<AuthBloc>(
         create: (context) => AuthBloc(FirebaseAuthProvider()),

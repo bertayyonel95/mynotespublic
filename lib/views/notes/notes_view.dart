@@ -34,7 +34,7 @@ class _NotesViewState extends State<NotesView> {
         title: const Text('Your Notes'),
         actions: [
           PopupMenuButton<FilterMenuAction>(
-            icon: const Icon(Icons.filter_alt_outlined),
+            icon: const Icon(Icons.sort),
             tooltip: 'Filter',
             onSelected: (value) {
               setState(() {
