@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mynotes/enums/menu_action.dart';
 import 'package:mynotes/services/cloud/cloud_note.dart';
 import 'package:mynotes/utilities/dialogs/delete_dialog.dart';
@@ -66,7 +67,10 @@ class NotesListView extends StatelessWidget {
               softWrap: true,
               overflow: TextOverflow.ellipsis,
             ),
-            subtitle: Text(note.date.toString().substring(0, 16)),
+            subtitle: Text(
+              DateFormat('EEEE, MMM d, yyyy, h:mm a')
+                  .format(DateTime.parse(note.date)),
+            ),
             trailing: IconButton(
               onPressed: () async {
                 final shouldDelete = await showDeleteDialog(context);

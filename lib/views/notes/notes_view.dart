@@ -9,6 +9,7 @@ import 'package:mynotes/services/cloud/cloud_note.dart';
 import 'package:mynotes/services/cloud/firebase_cloud_storage.dart';
 import 'package:mynotes/utilities/dialogs/logout_dialog.dart';
 import 'package:mynotes/views/notes/notes_list_view.dart';
+import 'package:mynotes/utilities/animatedWidgets/animated_widget.dart';
 
 class NotesView extends StatefulWidget {
   const NotesView({Key? key}) : super(key: key);
@@ -20,11 +21,34 @@ class _NotesViewState extends State<NotesView> {
   late final FirebaseCloudStorage _notesService;
   String get userId => AuthService.firebase().currentUser!.id;
   FilterMenuAction _value = FilterMenuAction.ascending;
+  late final TextEditingController _textEditingController;
+  late final TextEditingController _searchController;
+  bool _selected = false;
+
+  double startPos = -1.0;
+  double endPos = 0.0;
+  Curve curve = Curves.elasticOut;
+
+  void hideWidget() {
+    setState(() {
+      _selected = !_selected;
+      _searchController.clear();
+    });
+  }
 
   @override
   void initState() {
+    _textEditingController = TextEditingController();
+    _searchController = TextEditingController();
     _notesService = FirebaseCloudStorage();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _textEditingController.dispose();
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -33,6 +57,10 @@ class _NotesViewState extends State<NotesView> {
       appBar: AppBar(
         title: const Text('Your Notes'),
         actions: [
+          IconButton(
+            onPressed: hideWidget,
+            icon: const Icon(Icons.search),
+          ),
           PopupMenuButton<FilterMenuAction>(
             icon: const Icon(Icons.sort),
             tooltip: 'Filter',
@@ -92,34 +120,66 @@ class _NotesViewState extends State<NotesView> {
           ),
         ],
       ),
-      body: StreamBuilder(
-        stream: _notesService.allNotes(ownerUserId: userId),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting: //implicit fall through
-            case ConnectionState.active:
-              if (snapshot.hasData) {
-                final allNotes = snapshot.data as List<CloudNote>;
-                return NotesListView(
-                  sortVar: _value,
-                  notes: allNotes,
-                  onDeleteNote: (note) async {
-                    await _notesService.deleteNote(documentId: note.documentId);
-                  },
-                  onTap: (note) {
-                    Navigator.of(context).pushNamed(
-                      createOrUpdateNoteRoute,
-                      arguments: note,
-                    );
-                  },
-                );
-              } else {
-                return const CircularProgressIndicator();
-              }
-            default:
-              return const CircularProgressIndicator();
-          }
-        },
+      body: Column(
+        children: [
+          Visibility(
+            visible: _selected,
+            child: TextField(
+              controller: _searchController,
+              onChanged: (value) {
+                setState(() {});
+              },
+              autofocus: true,
+            ),
+          ),
+          Flexible(
+            child: StreamBuilder(
+              stream: _notesService.allNotes(ownerUserId: userId),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting: //implicit fall through
+                  case ConnectionState.active:
+                    if (snapshot.hasData) {
+                      List<CloudNote> allNotes =
+                          snapshot.data as List<CloudNote>;
+
+                      final dummySearchList = allNotes;
+
+                      if (_searchController.text.isNotEmpty) {
+                        List<CloudNote> dummyListData = <CloudNote>[];
+                        for (var element in dummySearchList) {
+                          if (element.text.contains(_searchController.text)) {
+                            dummyListData.add(element);
+                          }
+                        }
+                        allNotes.clear();
+                        allNotes.addAll(dummyListData);
+                      }
+
+                      return NotesListView(
+                        sortVar: _value,
+                        notes: allNotes,
+                        onDeleteNote: (note) async {
+                          await _notesService.deleteNote(
+                              documentId: note.documentId);
+                        },
+                        onTap: (note) {
+                          Navigator.of(context).pushNamed(
+                            createOrUpdateNoteRoute,
+                            arguments: note,
+                          );
+                        },
+                      );
+                    } else {
+                      return const CircularProgressIndicator();
+                    }
+                  default:
+                    return const CircularProgressIndicator();
+                }
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
