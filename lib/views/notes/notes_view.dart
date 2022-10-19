@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mynotes/constants/routes.dart';
@@ -9,7 +10,6 @@ import 'package:mynotes/services/cloud/cloud_note.dart';
 import 'package:mynotes/services/cloud/firebase_cloud_storage.dart';
 import 'package:mynotes/utilities/dialogs/logout_dialog.dart';
 import 'package:mynotes/views/notes/notes_list_view.dart';
-import 'package:mynotes/utilities/animatedWidgets/animated_widget.dart';
 
 class NotesView extends StatefulWidget {
   const NotesView({Key? key}) : super(key: key);
@@ -122,41 +122,57 @@ class _NotesViewState extends State<NotesView> {
       ),
       body: Column(
         children: [
-          Visibility(
-            visible: _selected,
+          // Visibility(
+          //   visible: _selected,
+          //   child: TextField(
+          //     controller: _searchController,
+          //     onChanged: (value) {
+          //       setState(() {});
+          //     },
+          //     autofocus: true,
+          //   ),
+          // ),
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            margin: const EdgeInsets.only(right: 6, left: 6),
             child: TextField(
+              enabled: _selected ? true : false,
               controller: _searchController,
               onChanged: (value) {
                 setState(() {});
               },
-              autofocus: true,
             ),
+            curve: Curves.fastOutSlowIn,
+            height: _selected ? 50.0 : 0.0,
+            alignment:
+                _selected ? const Alignment(0, 0) : const Alignment(-1, -1),
           ),
-          Flexible(
-            child: StreamBuilder(
-              stream: _notesService.allNotes(ownerUserId: userId),
-              builder: (context, snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.waiting: //implicit fall through
-                  case ConnectionState.active:
-                    if (snapshot.hasData) {
-                      List<CloudNote> allNotes =
-                          snapshot.data as List<CloudNote>;
+          StreamBuilder(
+            stream: _notesService.allNotes(ownerUserId: userId),
+            builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.waiting: //implicit fall through
+                case ConnectionState.active:
+                  if (snapshot.hasData) {
+                    List<CloudNote> allNotes = snapshot.data as List<CloudNote>;
 
-                      final dummySearchList = allNotes;
+                    final dummySearchList = allNotes;
 
-                      if (_searchController.text.isNotEmpty) {
-                        List<CloudNote> dummyListData = <CloudNote>[];
-                        for (var element in dummySearchList) {
-                          if (element.text.contains(_searchController.text)) {
-                            dummyListData.add(element);
-                          }
+                    if (_searchController.text.isNotEmpty) {
+                      List<CloudNote> dummyListData = <CloudNote>[];
+                      for (var element in dummySearchList) {
+                        if (element.text
+                            .toLowerCase()
+                            .contains(_searchController.text.toLowerCase())) {
+                          dummyListData.add(element);
                         }
-                        allNotes.clear();
-                        allNotes.addAll(dummyListData);
                       }
+                      allNotes.clear();
+                      allNotes.addAll(dummyListData);
+                    }
 
-                      return NotesListView(
+                    return Expanded(
+                      child: NotesListView(
                         sortVar: _value,
                         notes: allNotes,
                         onDeleteNote: (note) async {
@@ -169,17 +185,34 @@ class _NotesViewState extends State<NotesView> {
                             arguments: note,
                           );
                         },
-                      );
-                    } else {
-                      return const CircularProgressIndicator();
-                    }
-                  default:
+                      ),
+                    );
+                  } else {
                     return const CircularProgressIndicator();
-                }
-              },
-            ),
+                  }
+                default:
+                  return const CircularProgressIndicator();
+              }
+            },
           ),
         ],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              child: Text('Tags'),
+              decoration: BoxDecoration(),
+            ),
+            ListTile(
+              title: const Text('Tag 1'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

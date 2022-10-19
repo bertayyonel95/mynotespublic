@@ -1,76 +1,54 @@
 import 'package:flutter/material.dart';
 
-// ignore: must_be_immutable
-class EasyAnimatedOffset extends StatefulWidget {
-  EasyAnimatedOffset();
+void main() => runApp(const MyApp());
 
-  @override
-  _EasyAnimatedOffsetState createState() => _EasyAnimatedOffsetState();
-}
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
-class _EasyAnimatedOffsetState extends State<EasyAnimatedOffset>
-    with SingleTickerProviderStateMixin {
-  //Notice the "SingleTickerProviderStateMixin" above
-  //Must add "AnimationController"
-  late AnimationController _animationController;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      //change the animation duration for a slower or faster animation.
-      //For example, replacing 1000 with 5000 will give you a 5x slower animation.
-      duration: Duration(milliseconds: 1000),
-    );
-  }
-
-  animateForward() {
-    _animationController.forward();
-    //this controller will move the animation forward
-    //you can also create a reverse animation using "_animationController.reverse()"
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
+  static const String _title = 'Flutter Code Sample';
 
   @override
   Widget build(BuildContext context) {
-    //the offset has a x value and y value.
-    //changing the y axis value moves the animation vertically
-    //changing the x axis value moves the animation horizantaly
-    double xAxisValue = 0;
-    double yAxisValue = 10;
-    return AnimatedBuilder(
-        animation: _animationController,
-        // child: widget.child,
-        builder: (context, child) {
-          return Transform.translate(
-              offset: Offset(_animationController.value * xAxisValue,
-                  _animationController.value * yAxisValue),
-              //add your button or widget here
-              child: InkWell(
-                  onTap: () {
-                    animateForward();
-                  },
-                  child: Center(
-                    child: Container(
-                        height: 100,
-                        width: 200,
-                        color: Colors.amber,
-                        child: Center(
-                          child: Text(
-                            "Animate Me",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 20,
-                            ),
-                          ),
-                        )),
-                  )));
+    return MaterialApp(
+      title: _title,
+      home: Scaffold(
+        appBar: AppBar(title: const Text(_title)),
+        body: const MyStatefulWidget(),
+      ),
+    );
+  }
+}
+
+class MyStatefulWidget extends StatefulWidget {
+  const MyStatefulWidget({super.key});
+
+  @override
+  State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
+}
+
+class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+  bool selected = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selected = !selected;
         });
+      },
+      child: Center(
+        child: AnimatedContainer(
+          width: selected ? 200.0 : 100.0,
+          height: selected ? 100.0 : 200.0,
+          color: selected ? Colors.red : Colors.blue,
+          alignment:
+              selected ? Alignment.center : AlignmentDirectional.topCenter,
+          duration: const Duration(seconds: 2),
+          curve: Curves.fastOutSlowIn,
+          child: const FlutterLogo(size: 75),
+        ),
+      ),
+    );
   }
 }
