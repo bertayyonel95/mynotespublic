@@ -122,16 +122,6 @@ class _NotesViewState extends State<NotesView> {
       ),
       body: Column(
         children: [
-          // Visibility(
-          //   visible: _selected,
-          //   child: TextField(
-          //     controller: _searchController,
-          //     onChanged: (value) {
-          //       setState(() {});
-          //     },
-          //     autofocus: true,
-          //   ),
-          // ),
           AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             margin: const EdgeInsets.only(right: 6, left: 6),

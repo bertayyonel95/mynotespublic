@@ -18,6 +18,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   CloudNote? _note;
   late final FirebaseCloudStorage _notesService;
   late final TextEditingController _textController;
+  late final TextEditingController _tagsTextController;
 
   Future<CloudNote> createOrGetExistingNote(BuildContext context) async {
     final widgetNote = context.getArgument<CloudNote>();
@@ -106,6 +107,12 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
               }
             },
             icon: const Icon(Icons.share),
+          ),
+          IconButton(
+            onPressed: () {
+              return;
+            },
+            icon: const Icon(Icons.tag),
           )
         ],
       ),

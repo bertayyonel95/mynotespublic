@@ -44,6 +44,7 @@ class FirebaseCloudStorage {
       documentId: fetchedNote.id,
       ownerUserId: ownerUserId,
       text: '',
+      tags: '',
       date: DateTime.now().toString(),
     );
   }
