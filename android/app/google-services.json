@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "1025692212091",
+    "project_id": "mynotes-flutter-bertay",
+    "storage_bucket": "mynotes-flutter-bertay.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1025692212091:android:f67dc794bab8578b4e7bde",
+        "android_client_info": {
+          "package_name": "com.bertay.mynotes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1025692212091-j0lfh15dru3ofmk7g7pas860fl56oef8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVq1YT60ZGp00gNPO5zsee_bDOJv60wkU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1025692212091-j0lfh15dru3ofmk7g7pas860fl56oef8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1025692212091-9f9n5aadeer6f0uuejouqf10kik27bog.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.bertay.mynotes"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
