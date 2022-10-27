@@ -251,7 +251,10 @@ class _NotesViewState extends State<NotesView> {
                       if (allNotes.isNotEmpty) {
                         for (var i = 0; i < allNotes.length; i++) {
                           if (allNotes[i].tags.isNotEmpty) {
-                            allTags.add(allNotes[i].tags);
+                            final split = allNotes[i].tags.split(',');
+                            for (int i = 0; i < split.length; i++) {
+                              allTags.add(split[i]);
+                            }
                           }
                         }
                       }

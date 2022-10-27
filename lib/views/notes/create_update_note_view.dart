@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/utilities/dialogs/cannot_share_empty_note_dialog.dart';
+import 'package:mynotes/utilities/dialogs/text_insert_dialog.dart';
 import 'package:mynotes/utilities/generics/get_arguments.dart';
 import 'package:mynotes/services/cloud/cloud_note.dart';
 import 'package:mynotes/services/cloud/cloud_storage_exceptions.dart';
@@ -16,6 +17,7 @@ class CreateUpdateNoteView extends StatefulWidget {
 
 class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   CloudNote? _note;
+  String addedTags = '';
   late final FirebaseCloudStorage _notesService;
   late final TextEditingController _textController;
   late final TextEditingController _tagsTextController;
@@ -51,11 +53,12 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   void _saveNoteIfTextNotEmpty() async {
     final note = _note;
     final text = _textController.text;
+    final tags = addedTags;
     if (note != null && text.isNotEmpty) {
       await _notesService.updateNote(
         documentId: note.documentId,
         text: text,
-        tags: 'tags',
+        tags: tags,
       );
     }
   }
@@ -64,6 +67,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   void initState() {
     _notesService = FirebaseCloudStorage();
     _textController = TextEditingController();
+    _tagsTextController = TextEditingController();
     super.initState();
   }
 
@@ -73,10 +77,11 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
       return;
     }
     final text = _textController.text;
+    final tags = _tagsTextController.text;
     await _notesService.updateNote(
       documentId: note.documentId,
       text: text,
-      tags: '',
+      tags: tags,
     );
   }
 
@@ -90,6 +95,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     _deleteNoteIfTextIsEmpty();
     _saveNoteIfTextNotEmpty();
     _textController.dispose();
+    _tagsTextController.dispose();
     super.dispose();
   }
 
@@ -111,10 +117,19 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
             icon: const Icon(Icons.share),
           ),
           IconButton(
-            onPressed: () {
-              return;
-            },
             icon: const Icon(Icons.tag),
+            onPressed: () async {
+              addedTags = await textInsertDialog(
+                previousText: addedTags,
+                context: context,
+                title: 'Tags',
+                optionBuilder: () => {'OK': true},
+                textEditingController: _tagsTextController,
+              ).then(
+                (value) => value ?? addedTags,
+              );
+              addedTags = addedTags.replaceAll(RegExp(' +'), ',');
+            },
           )
         ],
       ),
@@ -123,6 +138,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
+              addedTags = _note!.tags;
               _setupTextControllerListener();
               return Padding(
                 padding: const EdgeInsets.all(12.0),
