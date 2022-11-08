@@ -129,6 +129,12 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
                 (value) => value ?? addedTags,
               );
               addedTags = addedTags.replaceAll(RegExp(' +'), ',');
+              if (addedTags[addedTags.length - 1] == ',') {
+                addedTags = addedTags.substring(0, addedTags.length - 1);
+              }
+              List<String> result = addedTags.split(',');
+              List distinctResult = result.toSet().toList();
+              addedTags = distinctResult.join(",");
             },
           )
         ],

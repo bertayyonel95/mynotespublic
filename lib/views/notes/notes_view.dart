@@ -172,23 +172,23 @@ class _NotesViewState extends State<NotesView> {
                     } else {
                       if (_searchController.text.isNotEmpty) {
                         List<CloudNote> dummyListData = <CloudNote>[];
+                        List<String> availableTags;
                         for (var element in dummySearchList) {
+                          availableTags = element.tags.split(',');
                           if (element.text.toLowerCase().contains(
                                   _searchController.text.toLowerCase()) &&
-                              element.tags
-                                  .toLowerCase()
-                                  .contains(_selectedTags.toLowerCase())) {
+                              availableTags.contains(_selectedTags)) {
                             dummyListData.add(element);
                           }
                         }
                         allNotes.clear();
                         allNotes.addAll(dummyListData);
                       } else {
+                        List<String> availableTags;
                         List<CloudNote> dummyListData = <CloudNote>[];
                         for (var element in dummySearchList) {
-                          if (element.tags
-                              .toLowerCase()
-                              .contains(_selectedTags.toLowerCase())) {
+                          availableTags = element.tags.split(',');
+                          if (availableTags.contains(_selectedTags)) {
                             dummyListData.add(element);
                           }
                         }
