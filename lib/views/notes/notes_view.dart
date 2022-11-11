@@ -224,59 +224,116 @@ class _NotesViewState extends State<NotesView> {
         ],
       ),
       drawer: Drawer(
-        child: Column(children: [
-          Spacer(),
-          SizedBox(
-            child: TextButton(
-              onPressed: () {
-                setState(() {
-                  _selectedTags = '';
-                  Navigator.of(context).pop();
-                });
-              },
-              child: const Text('All'),
-            ),
+        // child: Column(children: [
+        //   Padding(
+        //     padding: const EdgeInsets.only(top: 50.0),
+        //     child: Row(
+        //       children: [
+        //         Padding(
+        //           padding: const EdgeInsets.only(left: 8.0),
+        //           child: TextButton(
+        //             onPressed: () {
+        //               setState(() {
+        //                 _selectedTags = '';
+        //                 Navigator.of(context).pop();
+        //               });
+        //             },
+        //             child: const Text(
+        //               'All Notes',
+        //               textAlign: TextAlign.right,
+        //             ),
+        //           ),
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        //   Expanded(
+        //     child: StreamBuilder(
+        //       stream: _notesService.allNotes(ownerUserId: userId),
+        //       builder: (context, snapshot) {
+        //         switch (snapshot.connectionState) {
+        //           case ConnectionState.waiting: //implicit fall through
+        //           case ConnectionState.active:
+        //             if (snapshot.hasData) {
+        //               List<CloudNote> allNotes =
+        //                   snapshot.data as List<CloudNote>;
+        //               List<String> allTags = <String>[];
+        //               if (allNotes.isNotEmpty) {
+        //                 for (var i = 0; i < allNotes.length; i++) {
+        //                   if (allNotes[i].tags.isNotEmpty) {
+        //                     final split = allNotes[i].tags.split(',');
+        //                     for (int i = 0; i < split.length; i++) {
+        //                       allTags.add(split[i]);
+        //                     }
+        //                   }
+        //                 }
+        //               }
+        //               return TagsListView(
+        //                 tagsList: allTags,
+        //                 onTap: (tag) {
+        //                   setState(() {
+        //                     _selectedTags = tag;
+        //                     Navigator.of(context).pop();
+        //                   });
+        //                 },
+        //               );
+        //             } else {
+        //               return const CircularProgressIndicator();
+        //             }
+        //           default:
+        //             return const CircularProgressIndicator();
+        //         }
+        //       },
+        //     ),
+        //   ),
+        // ]),
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Tags'),
           ),
-          Expanded(
-            child: StreamBuilder(
-              stream: _notesService.allNotes(ownerUserId: userId),
-              builder: (context, snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.waiting: //implicit fall through
-                  case ConnectionState.active:
-                    if (snapshot.hasData) {
-                      List<CloudNote> allNotes =
-                          snapshot.data as List<CloudNote>;
-                      List<String> allTags = <String>[];
-                      if (allNotes.isNotEmpty) {
-                        for (var i = 0; i < allNotes.length; i++) {
-                          if (allNotes[i].tags.isNotEmpty) {
-                            final split = allNotes[i].tags.split(',');
-                            for (int i = 0; i < split.length; i++) {
-                              allTags.add(split[i]);
-                            }
+          body: StreamBuilder(
+            stream: _notesService.allNotes(ownerUserId: userId),
+            builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.waiting: //implicit fall through
+                case ConnectionState.active:
+                  if (snapshot.hasData) {
+                    List<CloudNote> allNotes = snapshot.data as List<CloudNote>;
+                    List<String> allTags = <String>[];
+                    if (allNotes.isNotEmpty) {
+                      for (var i = 0; i < allNotes.length; i++) {
+                        if (allNotes[i].tags.isNotEmpty) {
+                          final split = allNotes[i].tags.split(',');
+                          for (int i = 0; i < split.length; i++) {
+                            allTags.add(split[i]);
                           }
                         }
                       }
-                      return TagsListView(
-                        tagsList: allTags,
-                        onTap: (tag) {
-                          setState(() {
-                            _selectedTags = tag;
-                            Navigator.of(context).pop();
-                          });
-                        },
-                      );
-                    } else {
-                      return const CircularProgressIndicator();
                     }
-                  default:
+                    return TagsListView(
+                      tagsList: allTags,
+                      onTap: (tag) {
+                        setState(() {
+                          _selectedTags = tag;
+                          Navigator.of(context).pop();
+                        });
+                      },
+                      resetCallBack: () {
+                        setState(() {
+                          _selectedTags = '';
+                          Navigator.of(context).pop();
+                        });
+                      },
+                    );
+                  } else {
                     return const CircularProgressIndicator();
-                }
-              },
-            ),
+                  }
+                default:
+                  return const CircularProgressIndicator();
+              }
+            },
           ),
-        ]),
+        ),
       ),
     );
   }

@@ -162,38 +162,6 @@ class _LoginViewState extends State<LoginView> {
                   ),
                 ),
               ),
-              Row(
-                children: const [
-                  Expanded(
-                    child: Divider(
-                      color: Colors.grey,
-                      thickness: 1,
-                      endIndent: 4,
-                    ),
-                  ),
-                  Text(
-                    'or use',
-                    style: TextStyle(
-                      color: Colors.grey,
-                    ),
-                  ),
-                  Expanded(
-                    child: Divider(
-                      color: Colors.grey,
-                      thickness: 1,
-                      indent: 4,
-                    ),
-                  )
-                ],
-              ),
-              SignInButton(
-                Buttons.GoogleDark,
-                onPressed: () {},
-              ),
-              SignInButton(
-                Buttons.AppleDark,
-                onPressed: () {},
-              )
             ],
           ),
         ),
