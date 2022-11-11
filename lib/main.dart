@@ -18,6 +18,7 @@ void main() {
   runApp(
     MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: const MaterialColor(
           0xFF607D8B,
